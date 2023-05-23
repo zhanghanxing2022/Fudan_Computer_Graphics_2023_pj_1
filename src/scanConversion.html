@@ -1,0 +1,85 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <title>CG project1 - part1</title>
+    <script src="./config.js"></script>
+    
+</head>
+<body>
+    <canvas id="myCanvas" width="800" height="600" style="border:1px solid #c3c3c3;">
+    Your browser does not support the canvas element.
+    </canvas>
+    <script type="text/javascript">
+        //根据配置值设置画布大小
+        var c=document.getElementById("myCanvas");
+        c.width = canvasSize["maxX"];
+        c.height = canvasSize["maxY"]
+        var cxt=c.getContext("2d");
+		// test();
+		//将canvas坐标整体偏移0.5，用于解决宽度为1个像素的线段的绘制问题，具体原理详见project文档
+		cxt.translate(0.5, 0.5); 
+		for(let i =0;i<polygon.length;i++)
+        {
+            quene.push(i);
+        }
+        console.log(quene);
+        console.log(vertex_pos);
+        console.log(polygon);
+        console.log(vertex_color);
+        //绘制多边形函数
+        function drawRects(cxt,pos,color,polygon)
+        {
+            for(let i = 0; i < quene.length;i++)
+            {
+                rectAet =new AET(cxt,color[polygon[quene[i]][0]]);
+                for(let j = 0; j < polygon[quene[ i]].length;j++)
+                {
+                    console.log()
+                    rectAet.insert(pos[polygon[quene[i]][j% polygon[quene[i]].length ]],pos[polygon[quene[i]][(j+1)%polygon[quene[i]].length]]);
+                }
+                rectAet.paint();
+            }
+            //为可拖动点加入手柄，使用了fill函数来绘制圆形
+            for(let i =0; i<pos.length;i++)
+            {
+                cxt.beginPath();
+                cxt.fillStyle ="red";
+                cxt.arc(pos[i][0],pos[i][1],10,0,2*Math.PI);
+                cxt.fill();//用来填充圆而非矩形。
+                cxt.stroke();
+            }
+
+        }
+        //清空画布，用于刷新
+        function clearCanvas(canvas,ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        drawRects(cxt,vertex_pos,vertex_color,polygon);
+
+        var chosen = [-1,-1,-1];
+        c.onmousedown=function(event)
+        {
+             chosen = chooseDragPoint(event.pageX,event.pageY);
+        }
+        c.onmousemove = function(event)
+        {
+            clearCanvas(c,cxt);
+            updateVertexPos(chosen,event.pageX,event.pageY);
+            drawRects(cxt,vertex_pos,vertex_color,polygon);
+        }
+        c.onmouseup=function()
+        {
+            chosen =[ -1,0,0];
+        }
+        //鼠标移出清除选中
+        c.onmouseout = function()
+        {
+            chosen=[-1,0,0];
+        }
+        // MoreTest();
+
+    </script>
+ 
+</body>
+</html>
